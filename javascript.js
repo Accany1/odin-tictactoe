@@ -2,6 +2,7 @@ function GameController() {
     const board = GameBoard() 
     const turn = Turn()
     const player = Players()
+    const checkwin = checkWin()
 
     const tiles = document.querySelectorAll(".place-tile")
     for (let i = 0; i < tiles.length; i++){
@@ -11,6 +12,7 @@ function GameController() {
             if (tiles[i].textContent === ""){
                 board.setValue(i,player.getPlayer())
                 turn.addTurn()
+                checkwin.check(board.getBoard(),player.getPlayer())
                 player.changePlayer()
                 board.updateBoard()
             } else {
@@ -21,7 +23,7 @@ function GameController() {
 
 }
 
-checkWin = (gameboard, selectedPlayer) => {
+function checkWin(){
     let winningCombinations = [
         [0,3,6],
         [1,4,7],
@@ -33,22 +35,26 @@ checkWin = (gameboard, selectedPlayer) => {
         [2,4,6]
     ]
 
-    for(let i = 0; i< winningCombinations.length ;i++) {
-        console.log(winningCombinations[i])
-        for(let n = 0; n<= 3 ;n++) {
-            if (n === 3) {
-                return true
-            }
-            const selected = winningCombinations[i][n]
-            if (gameboard[selected] === selectedPlayer){
-                continue
-            } else {
-                break
+    const check = (gameboard, selectedPlayer) => {
+        for(let i = 0; i< winningCombinations.length ;i++) {
+            for(let n = 0; n<= 3 ;n++) {
+                if (n === 3) {
+                    console.log("YOU WIN")
+                    return true
+                }
+                const selected = winningCombinations[i][n]
+                if (gameboard[selected] === selectedPlayer){
+                    continue
+                } else {
+                    break
+                }
             }
         }
+
+        return false
     }
 
-    return false
+    return {check}
 }
 
 // console.log(checkWin(gameboard,"X"))
