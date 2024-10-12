@@ -34,7 +34,9 @@ function GameController() {
                 console.log(player.getPlayer())
                 button.textContent = 'Restart Game'
                 result.textContent = player.getPlayer() + "'s turn"
-            }            
+            } else {
+                result.textContent = "Please input your names"
+            }
         }
     })
 
