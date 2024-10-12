@@ -3,28 +3,91 @@ function GameController() {
     const player = Players()
     const checkwin = checkWin()
     const result = document.querySelector("#results")
-
     const tiles = document.querySelectorAll(".place-tile")
-    for (let i = 0; i < tiles.length; i++){
-        tiles[i].addEventListener("click", () => {
-        
-            // set value if clicked
-            if (tiles[i].textContent === ""){
-                board.setValue(i,player.getPlayer())
-                const checked = checkwin.check(board.getBoard(),player.getPlayer())
-                if (checked === true) {
-                    result.textContent = player.getPlayer() + " Wins!"
-                    board.updateBoard()
-                } else {
-                    player.changePlayer()
-                    board.updateBoard()
-                }
+    const gamestate = gameState()
+    const button = document.querySelector("#start")
+
+    let turn = 0
+
+    button.addEventListener("click" , () => {
+        if (player.checkPlayers()) {
+            if (gamestate.getState() === null){
+                gamestate.gameStart()
+                button.textContent = 'Restart Game'
+                result.textContent = player.getPlayer() + "'s turn"
+            } else if (gamestate.getState() === "start") {
+                
             } else {
-                console.log("invalid move")
+                board.clearBoard()
+                gamestate.gameStart()
+                result.textContent = player.getPlayer() + "'s turn"
+                turn = 0
             }
-        })
+        } else {
+            const input1 = document.getElementById("input1")
+            const input2 = document.getElementById("input2")
+            if (input1.value !== "" && input2.value !== ""){
+                player.setPlayers(input1.value,input2.value)
+                input1.value = ""
+                input2.value = ""
+                gamestate.gameStart()
+                console.log(player.getPlayer())
+                button.textContent = 'Restart Game'
+                result.textContent = player.getPlayer() + "'s turn"
+            }            
+        }
+    })
+
+    for (let i = 0; i < tiles.length; i++){
+            tiles[i].addEventListener("click", () => {
+                if (gamestate.getState() === null){
+                } else {
+                    // set value if clicked
+                    if (tiles[i].textContent === ""){
+                        if (gamestate.getState() === "end"){
+                        } else {
+                            board.setValue(i,player.getPlayerPiece())
+                            const checked = checkwin.check(board.getBoard(),player.getPlayerPiece())
+                             if (checked === true) {
+                                board.updateBoard()
+                                result.textContent = player.getPlayer() + " Wins!"
+                                gamestate.gameEnd()
+                            } else if (turn === 8){
+                                board.updateBoard()
+                                result.textContent = "It's a TIE"
+                                gamestate.gameEnd()
+                            } else {
+                                player.changePlayer()
+                                board.updateBoard()
+                                turn++
+                            }
+                        }
+                    } else {
+                        console.log("invalid move")
+                    }
+                }
+            })
+    }
+}
+
+function gameState() {
+    let gameState = null
+
+    const getState = () => gameState
+    
+    const gameStart = () => {
+        gameState = "start"
     }
 
+    const gameEnd = () => {
+        gameState = "end"
+    }
+
+    return {
+        gameStart,
+        gameEnd,
+        getState
+    }
 }
 
 function checkWin(){
@@ -45,7 +108,6 @@ function checkWin(){
         for(let i = 0; i< winningCombinations.length ;i++) {
             for(let n = 0; n<= 3 ;n++) {
                 if (n === 3) {
-                    console.log("YOU WIN")
                     return true
                 }
                 const selected = winningCombinations[i][n]
@@ -68,9 +130,9 @@ function checkWin(){
 // playGame(players)
 
 function Players() {
-    const players = {
-        player1:"X",
-        player2:"O"
+    let players = {
+        player1:"",
+        player2:""
     }
 
     const result = document.querySelector("#results")
@@ -78,6 +140,14 @@ function Players() {
     let currentPlayer = players.player1
 
     const getPlayer = () => currentPlayer
+
+    const getPlayerPiece = () => {
+        if (currentPlayer === players.player1){
+            return "X"
+        } else {
+            return "O"
+        }
+    }
 
     const changePlayer = () => {
         if (currentPlayer === players.player1) {
@@ -89,9 +159,28 @@ function Players() {
         }
     }
 
+    const setPlayers = (name1,name2) => {
+        players = {
+            player1:name1,
+            player2:name2
+        }
+        currentPlayer = players.player1
+    }
+
+    const checkPlayers = () => {
+        if (players.player1 === "" || players.player2 === "") {
+            return false
+        } else {
+            return true
+        }
+    }
+
     return {
         getPlayer,
-        changePlayer
+        changePlayer,
+        setPlayers,
+        checkPlayers,
+        getPlayerPiece
     }
 }
 
@@ -124,14 +213,21 @@ function GameBoard() {
         }
     }
 
+    const clearBoard = () => {
+        board = ["","","","","","","","",""]
+        const tiles = document.querySelectorAll(".place-tile")
+        for (let i = 0; i < tiles.length; i++) {
+            tiles[i].textContent = board[i]
+        }
+    }
+
     return {
         getBoard, 
         updateBoard,
-        setValue
+        setValue,
+        clearBoard
     }
 }
-
-
 
 const board = GameController()
 

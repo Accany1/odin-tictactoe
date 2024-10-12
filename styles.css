@@ -8,18 +8,17 @@ html {
 
 
 #align-container {
-    display: flex;
+    display: grid;
     justify-content: center;
     align-content: center;
-    align-items: center;
-    flex-direction: column;
+    justify-items: center;
+    grid-template-rows: 1fr 1fr 1fr;
     height: 100%;
 }
 
 
 #container {
     display: grid;
-    position: absolute;
     grid-template-columns: 100px 100px 100px;
     grid-template-rows: 100px 100px 100px;
     justify-content: center;
@@ -30,9 +29,12 @@ html {
 }
 
 #results {
-    margin-bottom: 450px;
+    position: relative;
+    display: flex;
     font-size: 1.5em;
     font-weight: bold;
+    justify-content: center;
+    margin-top: 50px;
 }
 
 
@@ -44,4 +46,9 @@ html {
     justify-items: center;
     align-items: center;
     font-size: 90px;
+}
+
+.form-container {
+    justify-content: center;
+    align-content: center;
 }
