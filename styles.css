@@ -5,17 +5,36 @@ html {
     font-family: 'Roboto', system-ui,-apple-system, BlinkMacSystemFont,Arial, sans-serif; 
 }
 
+
+
+#align-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+
 #container {
     display: grid;
+    position: absolute;
     grid-template-columns: 100px 100px 100px;
     grid-template-rows: 100px 100px 100px;
     justify-content: center;
     align-content: center;
     align-items: center;
-    gap: 20px;
-    height: 100%;
-    background: #D7D7D7;
+    gap: 5px;
+    background-color: black;
 }
+
+#results {
+    margin-bottom: 450px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 
 .place-tile {
     width: 100px;

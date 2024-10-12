@@ -1,8 +1,8 @@
 function GameController() {    
     const board = GameBoard() 
-    const turn = Turn()
     const player = Players()
     const checkwin = checkWin()
+    const result = document.querySelector("#results")
 
     const tiles = document.querySelectorAll(".place-tile")
     for (let i = 0; i < tiles.length; i++){
@@ -11,10 +11,14 @@ function GameController() {
             // set value if clicked
             if (tiles[i].textContent === ""){
                 board.setValue(i,player.getPlayer())
-                turn.addTurn()
-                checkwin.check(board.getBoard(),player.getPlayer())
-                player.changePlayer()
-                board.updateBoard()
+                const checked = checkwin.check(board.getBoard(),player.getPlayer())
+                if (checked === true) {
+                    result.textContent = player.getPlayer() + " Wins!"
+                    board.updateBoard()
+                } else {
+                    player.changePlayer()
+                    board.updateBoard()
+                }
             } else {
                 console.log("invalid move")
             }
@@ -36,6 +40,8 @@ function checkWin(){
     ]
 
     const check = (gameboard, selectedPlayer) => {
+
+
         for(let i = 0; i< winningCombinations.length ;i++) {
             for(let n = 0; n<= 3 ;n++) {
                 if (n === 3) {
@@ -66,6 +72,8 @@ function Players() {
         player1:"X",
         player2:"O"
     }
+
+    const result = document.querySelector("#results")
         
     let currentPlayer = players.player1
 
@@ -74,31 +82,16 @@ function Players() {
     const changePlayer = () => {
         if (currentPlayer === players.player1) {
             currentPlayer = players.player2
+            result.textContent = currentPlayer + "'s turn"
         } else {
             currentPlayer = players.player1
+            result.textContent = currentPlayer + "'s turn"
         }
     }
 
     return {
         getPlayer,
         changePlayer
-    }
-}
-
-function Turn() {
-    let turn = 0
-
-    const getTurn = () => turn
-
-    const addTurn = () => {
-        turn++
-        console.log('turn ' + turn)
-    }
-
-
-    return {
-        getTurn,
-        addTurn
     }
 }
 
